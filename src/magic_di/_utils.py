@@ -66,7 +66,7 @@ def get_cls_from_optional(cls: T) -> T:
 
 def safe_is_subclass(sub_cls: Any, cls: type) -> bool:
     try:
-        return issubclass(sub_cls, cls)
+        return issubclass(sub_cls)
     except TypeError:
         return False
 
