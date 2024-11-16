@@ -138,7 +138,7 @@ class DependencyInjector:
 
         return signature
 
-    async def connect(self) -> None:
+    def connect(self) -> None:
         """
         Connect all injected dependencies
         """
@@ -160,7 +160,7 @@ class DependencyInjector:
         for cls, instance in self._deps.iter_instances(reverse=True):
             if connectable_instance := is_connectable(instance):
                 try:
-                    await connectable_instance.__disconnect__()
+                    connectable_instance.__disconnect__()
                 except Exception:
                     self.logger.exception("Failed to disconnect %s", cls.__name__)
 
@@ -208,7 +208,7 @@ class DependencyInjector:
         injected: T | None = None
 
         def inject() -> T:
-            nonlocal injected
+            global injected
 
             if injected is not None:
                 return injected
