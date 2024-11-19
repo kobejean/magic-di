@@ -101,7 +101,7 @@ class DependencyInjector:
             clients[signature.injector_arg] = self
 
         try:
-            return self._deps.add(obj, **clients)
+            self._deps.add(obj, **clients)
         except TypeError as exc:
             raise InjectionError(obj, signature) from exc
 
@@ -138,7 +138,7 @@ class DependencyInjector:
 
         return signature
 
-    def connect(self) -> None:
+    async def connect(self) -> None:
         """
         Connect all injected dependencies
         """
@@ -160,7 +160,7 @@ class DependencyInjector:
         for cls, instance in self._deps.iter_instances(reverse=True):
             if connectable_instance := is_connectable(instance):
                 try:
-                    connectable_instance.__disconnect__()
+                    await connectable_instance.__disconnect__()
                 except Exception:
                     self.logger.exception("Failed to disconnect %s", cls.__name__)
 
@@ -208,7 +208,7 @@ class DependencyInjector:
         injected: T | None = None
 
         def inject() -> T:
-            global injected
+            nonlocal injected
 
             if injected is not None:
                 return injected
